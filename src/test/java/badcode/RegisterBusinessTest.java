@@ -54,9 +54,24 @@ public class RegisterBusinessTest {
     }
 
     @Test
+    @DisplayName("Email ไม่มี domain ดังนั้นจะโยน exception ออกมา"+
+            "พร้อมกับคำว่า Email's domain is required.")
+    public void case04() {
+        RegisterBusiness business = new RegisterBusiness();
+        Speaker speaker = new Speaker();
+        speaker.setFirstName("Ball");
+        speaker.setLastName("Boba");
+        speaker.setEmail("ballboba");
+        Exception exception = assertThrows(DomainEmailInvalidException.class, () -> {
+            business.register(null, speaker);
+        });
+        assertEquals("Email's domain is required.",exception.getMessage());
+    }
+
+    @Test
     @DisplayName("Email ไม่อยู่ใน domains ดังนั้นจะโยน exception ออกมา "+
             "พร้อมกับคำว่า Speaker doesn't meet our standard rules.")
-    public void case04() {
+    public void case05() {
         RegisterBusiness business = new RegisterBusiness();
         Speaker speaker = new Speaker();
         speaker.setFirstName("Ball");
@@ -67,11 +82,10 @@ public class RegisterBusinessTest {
         });
         assertEquals("Speaker doesn't meet our standard rules.",exception.getMessage());
     }
-
     @Test
     @DisplayName("Repository is null exception ออกมา "+
             "พร้อมกับคำว่า Can't save a speaker.")
-    public void case05() {
+    public void case06() {
         RegisterBusiness business = new RegisterBusiness();
         Speaker speaker = new Speaker();
         speaker.setFirstName("Ball");
