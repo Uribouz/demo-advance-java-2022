@@ -4,9 +4,17 @@ import java.util.Arrays;
 
 public class RegisterBusiness {
 
+    public static final int IS_FOUND = 1;
+
     public Integer register(SpeakerRepository repository, Speaker speaker) {
+        String[] domains = {"gmail.com", "live.com"};
         Integer speakerId;
         validateSpeaker(speaker);
+
+        String emailDomain = getEmailDomain(speaker.getEmail()); // Avoid ArrayIndexOutOfBound
+        if (Arrays.stream(domains).filter(it -> it.equals(emailDomain)).count() != IS_FOUND) {
+            throw new SpeakerDoesntMeetRequirementsException("Speaker doesn't meet our standard rules.");
+        }
         int exp = speaker.getExp();
         speaker.setRegistrationFee(getFee(exp));
         try {
@@ -16,29 +24,6 @@ public class RegisterBusiness {
         }
 
         return speakerId;
-    }
-
-    private void validateSpeaker(Speaker speaker) {
-        String[] domains = {"gmail.com", "live.com"};
-
-        if(speaker ==null) {
-            throw new RuntimeException("speaker is null");
-        }
-        if (isNullOrEmpty(speaker.getFirstName())) {
-            throw new ArgumentNullException("First name is required.");
-        }else if (isNullOrEmpty(speaker.getLastName())) {
-            throw new ArgumentNullException("Last name is required.");
-        }else if (isNullOrEmpty(speaker.getEmail())) {
-            throw new ArgumentNullException("Email is required.");
-        }
-        String emailDomain = getEmailDomain(speaker.getEmail()); // Avoid ArrayIndexOutOfBound
-        if (Arrays.stream(domains).filter(it -> it.equals(emailDomain)).count() != 1) {
-            throw new SpeakerDoesntMeetRequirementsException("Speaker doesn't meet our standard rules.");
-        }
-    }
-
-    private boolean isNullOrEmpty(String speaker) {
-        return speaker == null || speaker.trim().equals("");
     }
 
     int getFee(int experienceYear) {
@@ -61,4 +46,10 @@ public class RegisterBusiness {
         throw new DomainEmailInvalidException("Email's domain is required.");
     }
 
+    private void validateSpeaker(Speaker speaker) {
+        if(speaker ==null) {
+            throw new RuntimeException("speaker is null");
+        }
+        speaker.validate();
+    }
 }

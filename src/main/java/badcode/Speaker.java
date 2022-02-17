@@ -1,5 +1,6 @@
 package badcode;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class Speaker {
@@ -11,6 +12,7 @@ public class Speaker {
     private boolean hasBlog;
     private String blogUrl;
     private List<String> certifications;
+
 
     public String getFirstName() {
         return firstName;
@@ -74,5 +76,20 @@ public class Speaker {
 
     public void setCertifications(List<String> certifications) {
         this.certifications = certifications;
+    }
+
+    public boolean validate() {
+        if (isNullOrEmpty(getFirstName())) {
+            throw new ArgumentNullException("First name is required.");
+        }else if (isNullOrEmpty(getLastName())) {
+            throw new ArgumentNullException("Last name is required.");
+        }else if (isNullOrEmpty(getEmail())) {
+            throw new ArgumentNullException("Email is required.");
+        }
+        return true;
+    }
+
+    private boolean isNullOrEmpty(String speaker) {
+        return speaker == null || speaker.trim().equals("");
     }
 }
